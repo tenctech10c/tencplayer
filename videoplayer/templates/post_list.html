@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="container mt-3">
+<div class='col-sm-6 col-sm-offset-3'>
+<h1>Technical Blogs</h1>
+<form class='row' method='GET' action=''>
+	<div class='col-sm-6'>
+		<div class='input-group'>
+			<input class='form-control' type='text' name='query' placeholder='Search posts' value='{{ request.GET.query }}'/>
+			<span class='input-group-btn'> 
+				<button class='btn btn-default' type='submit'><i class='fa fa-search'></i></button>
+			</span>
+		</div>
+	</div>
+</form>
+<br />
+<div class="row">
+{% for obj in object_list %}
+<div class="col-sm-12"> <!-- column 1 -->
+	<div class="thumbnail"> <!--  thumbnail 1  -->
+		{% if obj.video_url %}
+		<video controls>
+		  <source src="https://github.com/tenctech10c/videoplayer/blob/main/videos/video1.mp4?raw=true" type="video/mp4">
+			Your browser does not support the video tag.
+		</video>
+		{% elif obj.image_url %}
+			<img src='{{ obj.image_url }}' class='img-responsive' />
+		{% endif %}
+		
+		<div class="caption post-detail-item"> <!-- caption -->
+			<h3>{{ obj.title }}<small> {{ obj.publish }}</small></h3>
+
+			{{ obj.get_markdown | truncatechars_html:120 }}
+		</div>
+	</div>
+	<hr />
+</div>
+
+<!-- {% cycle "" "</div><div class='col-sm-12'><hr /></div><div class='row'>"%} -->
+{% endfor %}
+
+<div class="pagination">
+	<span class="step-links">
+		{% if object_list.has_previous %}
+			<a href='?{{ page_request_var }}={{ object_list.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}'>Previous</a>
+		{% endif %}
+		
+		<span class="current">
+			Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+		</span>
+		
+		{% if object_list.has_next %}
+            <a href="?{{ page_request_var }}={{ object_list.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">Next</a>
+        {% endif %}
+	</span>
+</div>
+
+</div>
+</div>
+</main>
+{% endblock content %}
